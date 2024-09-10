@@ -22,11 +22,13 @@ endif(CODE_COVERAGE AND UNIX)
 add_executable(lccgen open-license-main.cpp)
 add_executable(license_generator::lccgen ALIAS lccgen)
 target_link_libraries(lccgen PRIVATE license_generator_lib)
-add_custom_command(TARGET lccgen POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                        $<TARGET_RUNTIME_DLLS:lccgen>
-                        $<TARGET_FILE_DIR:lccgen>
-                    COMMAND_EXPAND_LISTS)
+if(WIN32)
+	add_custom_command(TARGET lccgen POST_BUILD
+						COMMAND ${CMAKE_COMMAND} -E copy
+							$<TARGET_RUNTIME_DLLS:lccgen>
+							$<TARGET_FILE_DIR:lccgen>
+						COMMAND_EXPAND_LISTS)
+endif()
 
 #install instructions
 install(TARGETS lccgen EXPORT license_generator RUNTIME DESTINATION bin)
